@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const authMiddleware = require('../middlewares/authentication');
 
 // REGISTER
 router.post('/register', async (req, res) => {
@@ -35,7 +36,21 @@ router.post('/login', async (req, res) => {
 		const validPassword = await bcrypt.compare(req.body.password, user.password);
 		// Check password
 		!validPassword && res.status(404).json('Wrong Password!');
-		console.log('HERE');
+
+		const accessToken = await user.generateToken();
+		res.status(200).json({ user, accessToken });
+	} catch (err) {
+		console.log(err);
+		res.status(500).json(err);
+	}
+});
+
+// GET ME
+router.get('/me', authMiddleware.loginrequired, async (req, res) => {
+	try {
+		const userId = req.userId;
+		const user = await User.findById(userId);
+
 		res.status(200).json(user);
 	} catch (err) {
 		res.status(500).json(err);
