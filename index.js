@@ -55,6 +55,7 @@ app.use('/api/conversations', conversationRoute);
 app.use('/api/messages', messageRoute);
 app.use('/api/comments', commentRoute);
 
-app.listen(8800, () => {
-	console.log('Backend Server is running on PORT:8800!');
-});
+// app.listen(8800, () => {
+// 	console.log('Backend Server is running on PORT:8800!');
+// });
+module.exports = app;
